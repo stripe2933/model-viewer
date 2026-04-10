@@ -1,0 +1,38 @@
+{
+  "name": "model-viewer",
+  "version": "0.1.0",
+  "dependencies": [
+    {
+      "name": "glfw3",
+      "platform": "!osx"
+    },
+    {
+      "name": "imgui",
+      "features": [
+        "docking-experimental",
+        "freetype",
+        "wchar32",
+        {
+          "name": "glfw-binding",
+          "platform": "!osx"
+        },
+        {
+          "name": "metal-binding",
+          "platform": "osx"
+        },
+        {
+          "name": "osx-binding",
+          "platform": "osx"
+        },
+        {
+          "name": "vulkan-binding",
+          "platform": "!osx"
+        }
+      ]
+    },
+    {
+      "name": "vku",
+      "platform": "!osx"
+    }
+  ]
+}

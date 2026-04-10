@@ -1,0 +1,48 @@
+on: push
+
+env:
+  USERNAME: stripe2933
+  FEED_URL: https://nuget.pkg.github.com/stripe2933/index.json
+  VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/stripe2933/index.json,readwrite"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install build dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install mono
+
+      - name: Install build dependencies (Ubuntu)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install mono-complete libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config
+
+      - name: Add NuGet sources (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          .$(vcpkg fetch nuget) sources add -Source "${{ env.FEED_URL }}" -StorePasswordInClearText -Name GitHubPackages -UserName "stripe2933" -Password "${{ secrets.GITHUB_TOKEN }}"
+          .$(vcpkg fetch nuget) setapikey "${{ secrets.GH_PACKAGES_TOKEN }}" -Source "${{ env.FEED_URL }}"
+
+      - name: Add NuGet sources (macOS, Ubuntu)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          mono `vcpkg fetch nuget | tail -n 1` sources add -Source "${{ env.FEED_URL }}" -StorePasswordInClearText -Name GitHubPackages -UserName "stripe2933" -Password "${{ secrets.GH_PACKAGES_TOKEN }}"
+          mono `vcpkg fetch nuget | tail -n 1` setapikey "${{ secrets.GH_PACKAGES_TOKEN }}" -Source "${{ env.FEED_URL }}"
+
+      - name: Configure
+        run: |
+          mv .github/workflows/scripts/* .
+          cmake --preset=ci-${{ matrix.os }}
+
+      - name: Build
+        run: cmake --build build --config Release

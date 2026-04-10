@@ -1,0 +1,31 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "ci-base",
+      "inherits": "base",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_INTERPROCEDURAL_OPTIMIZATION": "ON"
+      },
+      "environment": {
+        "VCPKG_ROOT": "$env{VCPKG_INSTALLATION_ROOT}"
+      }
+    },
+    {
+      "name": "ci-windows-latest",
+      "inherits": "ci-base",
+      "generator": "Visual Studio 17 2022"
+    },
+    {
+      "name": "ci-macos-latest",
+      "inherits": "ci-base",
+      "generator": "Xcode"
+    },
+    {
+      "name": "ci-ubuntu-latest",
+      "inherits": "ci-base",
+      "generator": "Ninja"
+    }
+  ]
+}
