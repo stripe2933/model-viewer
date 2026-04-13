@@ -2,6 +2,11 @@
   "name": "model-viewer",
   "version": "0.1.0",
   "dependencies": [
+    "boost-container",
+    "boost-container-hash",
+    "boost-iostreams",
+    "fastgltf",
+    "glm",
     {
       "name": "glfw3",
       "platform": "!osx"

@@ -1,4 +1,6 @@
-#ifdef NO_PCH
+#ifndef NO_PCH
+#include "pch.hpp"
+#else
 #include <cstdint>
 #include <algorithm>
 #include <stdexcept>
@@ -13,6 +15,7 @@
 #include <vku.hpp>
 
 #ifdef _WIN32
+#define NOMINMAX
 #include <windows.h>
 #undef MemoryBarrier
 #endif

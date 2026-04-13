@@ -5,11 +5,25 @@ project(model-viewer
     VERSION 0.1.0
 )
 
+find_package(Boost COMPONENTS container container_hash iostreams REQUIRED)
+find_package(fastgltf CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 
 add_executable(model-viewer WIN32 MACOSX_BUNDLE)
 target_compile_features(model-viewer PRIVATE cxx_std_23)
-target_link_libraries(model-viewer PRIVATE imgui::imgui)
+target_link_libraries(model-viewer PRIVATE
+    Boost::container
+    Boost::container_hash
+    Boost::iostreams
+    fastgltf::fastgltf
+    imgui::imgui
+    glm::glm
+)
+target_compile_definitions(model-viewer PRIVATE
+    GLM_FORCE_XYZW_ONLY
+    GLM_FORCE_DEPTH_ZERO_TO_ONE
+)
 
 if (APPLE)
     enable_language(OBJCXX)
@@ -44,6 +58,7 @@ else()
         main.cpp
         impl.cpp
         vulkan/Gpu.cpp
+        vulkan/Model.cpp
         vulkan/Swapchain.cpp
     )
     target_precompile_headers(model-viewer PRIVATE pch.hpp)
@@ -56,4 +71,6 @@ else()
         VULKAN_HPP_NO_SMART_HANDLE
         VULKAN_HPP_NO_TO_STRING
     )
+
+    set_source_files_properties(impl.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 endif()
